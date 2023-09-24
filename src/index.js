@@ -26,7 +26,7 @@ class Pue {
   ref(value) {
     if (value) {
       const refElement = document.querySelector(`[ref="${value}"]`);
-      return refElement || null;
+      if(refElement) return refElement;
     }
 
     const obj = {
