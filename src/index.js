@@ -179,6 +179,50 @@ class Pue {
   onTouchCancel(el, callback) {
     this.#handleEvent(el, 'touchcancel', callback);
   }
+  // hooks
+  #useStorage(prefix,type){
+    let fn;
+    switch(type){
+      case 'localStorage':
+        fn = window.localStorage;
+        break;
+      case 'sessionStorage':
+        fn = window.sessionStorage;
+        break;
+    }
+    if(!fn) return
+    return {
+      set(key,value){
+        const name = prefix ? `${prefix}.${key}` : key;
+        try{
+          fn.setItem(name,JSON.stringify(value))
+        }catch(err){}
+      },
+      get(key){
+        const name = prefix ? `${prefix}.${key}` : key;
+        const item = fn.getItem(name);
+        try{
+          return item ? JSON.parse(item) : undefined
+        }catch(err){}
+      },
+      delete(key){
+        const name = prefix ? `${prefix}.${key}` : key;
+        fn.removeItem(name)
+      },
+      watch:(callback)=>{
+        this.#handleEvent(window,'storage',(e)=>{
+          console.log("???")
+          callback(e)
+        })
+      }
+    }
+  }
+  useLocalStorage(prefix){
+    return this.#useStorage(prefix,'localStorage')
+  }
+  useSessionStorage(prefix){
+    return this.#useStorage(prefix,'sessionStorage');
+  }
 }
 
 const pue = Object.freeze(new Pue());
