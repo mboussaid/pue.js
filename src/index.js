@@ -223,6 +223,36 @@ class Pue {
   useSessionStorage(prefix){
     return this.#useStorage(prefix,'sessionStorage');
   }
+  get model(){
+    const obj = {
+      textContent:(el,ref)=>{
+        if(!el || !ref) return
+        const tagName = el.tagName.toLowerCase();
+        this.watch(ref,()=>{
+          el.textContent = ref.value;
+        })
+      },
+      innerHTML:(el,ref)=>{
+        if(!el || !ref) return
+        const tagName = el.tagName.toLowerCase();
+        this.watch(ref,()=>{
+          el.innerHTML = ref.value
+        })
+      },
+      value:(el,ref)=>{
+        if(!el || !ref) return
+        this.watch(ref,()=>{
+          if(el.type === "checkbox"){
+            el.checked = ref.value? true : false;
+          }
+          if(el.type === "text" || el.type === "password"){
+            el.value = ref.value
+          }
+        })
+      }
+    }
+    return obj;
+  }
 }
 
 const pue = Object.freeze(new Pue());
