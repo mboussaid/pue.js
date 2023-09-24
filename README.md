@@ -4,6 +4,9 @@
 ### Selecting DOM Elements
 
 You can use **Pue** to select DOM elements by their CSS selectors.
+```html
+<script src="https://cdn.jsdelivr.net/gh/mboussaid/pue.js/dist/pue.min.js"></script>
+```
 
 ```
 npm install pue.js
