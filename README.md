@@ -1,6 +1,91 @@
 # Pue - A JavaScript Utility Class
 
 **Pue** is a JavaScript utility class that provides various functions for common web development tasks, including DOM manipulation, event handling, and more.
+### Selecting DOM Elements
+
+You can use **Pue** to select DOM elements by their CSS selectors.
+
+```javascript
+// Select a single element
+const singleElement = pue.el('.my-element');
+
+// Select multiple elements
+const multipleElements = pue.els('.my-elements');
+```
+
+### Creating and Using References
+
+**Pue** allows you to create references with data binding capabilities.
+
+```javascript
+// Create a reference
+const myRef = pue.ref('myReference');
+
+// Set the value of the reference
+myRef.value = 'Hello, Pue!';
+
+// Watch for changes in the reference
+pue.watch(myRef, () => {
+  console.log(`Reference value changed: ${myRef.value}`);
+});
+```
+
+### Computed References
+
+You can create computed references that depend on other references.
+
+```javascript
+// Create references
+const num1 = pue.ref(5);
+const num2 = pue.ref(10);
+
+// Create a computed reference that calculates the sum
+const sum = pue.computed(() => num1.value + num2.value, [num1, num2]);
+
+// Watch for changes in the computed reference
+pue.watch(sum, () => {
+  console.log(`Sum is now: ${sum.value}`);
+});
+
+// Update the values of the dependent references
+num1.value = 7;
+num2.value = 20;
+```
+
+### Event Listeners
+
+**Pue** makes it easy to add event listeners to DOM elements.
+
+```javascript
+// Attach a click event listener
+pue.onClick(singleElement, () => {
+  console.log('Element clicked!');
+});
+
+// Attach a double-click event listener
+pue.onDoubleClick(singleElement, () => {
+  console.log('Element double-clicked!');
+});
+
+// Attach a keydown event listener
+pue.onKeyDown(document, (event) => {
+  console.log(`Key pressed: ${event.key}`);
+});
+```
+
+### Rendering Mustache Templates
+
+You can use **Pue** to render Mustache templates with data.
+
+```javascript
+const template = 'Hello, {{name}}!';
+const data = { name: 'Pue' };
+
+const renderedHTML = pue.render(template, data);
+console.log(renderedHTML); // Outputs: Hello, Pue!
+```
+
+These snippets provide examples of how to use various features of the **Pue** utility class in your web development projects.
 
 ## Table of Contents
 
@@ -147,89 +232,3 @@ To use **Pue** in your project, follow these steps:
 - `onTouchCancel(el, callback)`: Attaches a touchcancel event listener to the specified element(s).
 
 These event listeners simplify the process of adding interactivity to your web applications.
-
-### Selecting DOM Elements
-
-You can use **Pue** to select DOM elements by their CSS selectors.
-
-```javascript
-// Select a single element
-const singleElement = pue.el('.my-element');
-
-// Select multiple elements
-const multipleElements = pue.els('.my-elements');
-```
-
-### Creating and Using References
-
-**Pue** allows you to create references with data binding capabilities.
-
-```javascript
-// Create a reference
-const myRef = pue.ref('myReference');
-
-// Set the value of the reference
-myRef.value = 'Hello, Pue!';
-
-// Watch for changes in the reference
-pue.watch(myRef, () => {
-  console.log(`Reference value changed: ${myRef.value}`);
-});
-```
-
-### Computed References
-
-You can create computed references that depend on other references.
-
-```javascript
-// Create references
-const num1 = pue.ref(5);
-const num2 = pue.ref(10);
-
-// Create a computed reference that calculates the sum
-const sum = pue.computed(() => num1.value + num2.value, [num1, num2]);
-
-// Watch for changes in the computed reference
-pue.watch(sum, () => {
-  console.log(`Sum is now: ${sum.value}`);
-});
-
-// Update the values of the dependent references
-num1.value = 7;
-num2.value = 20;
-```
-
-### Event Listeners
-
-**Pue** makes it easy to add event listeners to DOM elements.
-
-```javascript
-// Attach a click event listener
-pue.onClick(singleElement, () => {
-  console.log('Element clicked!');
-});
-
-// Attach a double-click event listener
-pue.onDoubleClick(singleElement, () => {
-  console.log('Element double-clicked!');
-});
-
-// Attach a keydown event listener
-pue.onKeyDown(document, (event) => {
-  console.log(`Key pressed: ${event.key}`);
-});
-```
-
-### Rendering Mustache Templates
-
-You can use **Pue** to render Mustache templates with data.
-
-```javascript
-const template = 'Hello, {{name}}!';
-const data = { name: 'Pue' };
-
-const renderedHTML = pue.render(template, data);
-console.log(renderedHTML); // Outputs: Hello, Pue!
-```
-
-These snippets provide examples of how to use various features of the **Pue** utility class in your web development projects.
