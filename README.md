@@ -5,6 +5,14 @@
 
 You can use **Pue** to select DOM elements by their CSS selectors.
 
+```
+npm install pue.js
+```
+```
+
+import pue from 'pue.js'
+```
+
 ```javascript
 // Select a single element
 const singleElement = pue.el('.my-element');
