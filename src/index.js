@@ -22,7 +22,26 @@ class Pue {
   els(selector) {
     return this.el(selector, true);
   }
-
+  state(initialValue){
+    let value = initialValue;
+    const getValue = ()=> value
+    let watchCallbacks = [];
+    const setValue = (newValue)=>{
+      if(typeof newValue === "function"){
+        value = newValue(value)
+      }else{
+        value = newValue
+      }
+      watchCallbacks.forEach(c=>c())
+    }
+    const watchValue = (callback)=>{
+      if(typeof callback === "function"){
+        if(watchCallbacks.find(c=>c=== callback)) return
+        watchCallbacks.push(callback)
+      }
+    }
+    return [getValue,setValue,watchValue]
+  }
   ref(value) {
     if (value) {
       const refElement = document.querySelector(`[ref="${value}"]`);
@@ -48,12 +67,15 @@ class Pue {
     return proxy;
   }
 
-  watch(ref, effect) {
+  watch(ref, effect,options={}) {
     if (!ref || !effect) return;
     let _refs = Array.isArray(ref) ? ref : [ref];
     _refs.forEach((r) => {
       r._effects.push(effect);
     });
+    if(options && options.execute){
+      effect();
+    }
   }
 
   computed(callback, refs) {
@@ -227,26 +249,52 @@ class Pue {
     const obj = {
       textContent:(el,ref)=>{
         if(!el || !ref) return
+        if(!ref._effects){
+          ref = this.ref(ref)
+        }
         const tagName = el.tagName.toLowerCase();
         this.watch(ref,()=>{
           el.textContent = ref.value;
+        },{
+          execute:true
         })
       },
       innerHTML:(el,ref)=>{
         if(!el || !ref) return
+        if(!ref._effects){
+          ref = this.ref(ref)
+        }
         const tagName = el.tagName.toLowerCase();
         this.watch(ref,()=>{
           el.innerHTML = ref.value
+        },{
+          execute:true
         })
       },
       value:(el,ref)=>{
         if(!el || !ref) return
+        if(!ref._effects){
+          ref = this.ref(ref)
+        }
+        if(el.type === "checkbox"){
+          const syncElToref = ()=>{
+            ref.value = el.checked;
+          }
+          const syncRefToEl = ()=>{
+            el.checked = ref.value? true : false
+          }
+          this.#handleEvent(el,'change',syncElToref);
+          syncRefToEl();
+        }
         this.watch(ref,()=>{
           if(el.type === "checkbox"){
-            el.checked = ref.value? true : false;
+            el.checked = ref.value? true : false
           }
           if(el.type === "text" || el.type === "password"){
             el.value = ref.value
+            el.addEventListener('input',e=>{
+              ref.value = el.value;
+            })
           }
         })
       }
